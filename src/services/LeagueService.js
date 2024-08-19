@@ -8,8 +8,13 @@
  *       ADDITIONALLY, MAKE SURE THAT ALL LIBRARIES USED IN THIS FILE FILE ARE COMPATIBLE WITH PURE JAVASCRIPT
  * 
  */
-class LeagueService {    
-    
+import { getAllMatches } from '../api'
+import { ref } from "vue";
+
+const matchesList = ref([])
+
+class LeagueService {
+
     /**
      * Sets the match schedule.
      * Match schedule will be given in the following form:
@@ -36,21 +41,25 @@ class LeagueService {
      * 
      * @param {Array} matches List of matches.
      */    
-    setMatches(matches) {}
+    setMatches(matches) {
+        matchesList.value = matches
+    }
 
     /**
      * Returns the full list of matches.
      * 
      * @returns {Array} List of matches.
      */
-    getMatches() {}
+    getMatches() {
+        return matchesList
+    }
 
     /**
      * Returns the leaderboard in a form of a list of JSON objecs.
      * 
      * [     
      *      {
-     *          teamName: [STRING]',
+     *          teamName: [STRING],
      *          matchesPlayed: [INTEGER],
      *          goalsFor: [INTEGER],
      *          goalsAgainst: [INTEGER],
@@ -66,8 +75,8 @@ class LeagueService {
      * Asynchronic function to fetch the data from the server and set the matches.
      */
     async fetchData() {
-        const matches = [] //TODO: replace this with the correct matches.
-        this.setMatches(matches); 
+        const matches = await getAllMatches()
+        this.setMatches(matches);
     }    
 }
 
