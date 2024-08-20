@@ -69,13 +69,137 @@ class LeagueService {
      * 
      * @returns {Array} List of teams representing the leaderboard.
      */
-    getLeaderboard() {}
-    
+    getLeaderboard() {
+        const sortedLeaderboardList = this.getSortedLeaderboard()
+        return sortedLeaderboardList
+    }
+
+    /** @returns {Array} sorted leaderboard as List of Entries
+     */
+    getSortedLeaderboard() {
+        const leaderboardObject = this.assessLeaderboardFromMatches(matchesList.value)
+        const leaderboardList = Object.values(leaderboardObject)
+
+        leaderboardList.sort((a, b) => {
+            /* compare leaderboard points */
+            if (a.points > b.points) {
+                return -1
+            } else if (a.points < b.points) {
+                return 1
+            }
+
+            const matchesWithTeamAAndBList = matchesList.value.filter((match) => {
+                return match.homeTeam === a.teamName && match.awayTeam === b.teamName ||
+                  match.homeTeam === b.teamName && match.awayTeam === a.teamName
+            })
+
+            /* 1st: equal points, so find tie-break by head-to-head winner */
+            const headToHeadTieBreakerLeaderboard = this.assessLeaderboardFromMatches(matchesWithTeamAAndBList)
+            // console.table(headToHeadTieBreakerLeaderboard)
+            const headToHeadTeamA = headToHeadTieBreakerLeaderboard[a.teamName]
+            const headToHeadTeamB = headToHeadTieBreakerLeaderboard[b.teamName]
+            if (headToHeadTeamA.points > headToHeadTeamB.points) {
+                return -1
+            } else if (headToHeadTeamA.points < headToHeadTeamB.points) {
+                return 1
+            }
+
+            /* 2nd: goal difference tie-breaker */
+            const teamAEntry = leaderboardObject[a.teamName]
+            const teamBEntry = leaderboardObject[b.teamName]
+            if (teamAEntry.goalsFor - teamAEntry.goalsAgainst > teamBEntry.goalsFor - teamBEntry.goalsAgainst) {
+                return -1
+            } else if (teamAEntry.goalsFor - teamAEntry.goalsAgainst < teamBEntry.goalsFor - teamBEntry.goalsAgainst) {
+                return 1
+            }
+
+            /* 3rd: goal difference tie-breaker */
+            if (teamAEntry.goalsFor > teamBEntry.goalsFor) {
+                return -1
+            } else if (teamAEntry.goalsFor < teamBEntry.goalsFor) {
+                return 1
+            }
+
+            /* 4rd: alphabetic ascending order tie-breaker */
+            if (teamAEntry.teamName < teamBEntry.teamName) {
+                return -1
+            } else if (teamAEntry.teamName > teamBEntry.teamName) {
+                return 1
+            }
+
+            return 0
+        })
+        return leaderboardList
+    }
+    /** @param localMatchesList {Array<Object>} list of matches, can be subset of all matches
+     *  @returns {Object} leaderboard map by name containing points for each team
+     */
+    assessLeaderboardFromMatches(localMatchesList) {
+        return localMatchesList.reduce((leaderboardObject, match) => {
+            let homeTeamEntry = leaderboardObject[match.homeTeam]
+            let awayTeamEntry = leaderboardObject[match.awayTeam]
+            // calculate for homeTeam
+            leaderboardObject[match.homeTeam] = this.calculateLeaderboardScoresPerTeam(match, homeTeamEntry, true)
+
+            // now calculate for awayTeam
+            leaderboardObject[match.awayTeam] = this.calculateLeaderboardScoresPerTeam(match, awayTeamEntry, false)
+
+            return leaderboardObject
+        }, {})
+    }
+
+    /** @param match {Object} representing a match
+     *  @param entry {Object} leaderboard entry
+     *  @param isHomeTeam {Boolean} run this calculation for home or away team?
+     *  @returns {Object} updated leaderboard entry
+     */
+    calculateLeaderboardScoresPerTeam = (match, entry, isHomeTeam = false) => {
+        let updatedTeamEntry = entry
+
+        // in case of the awayTeam exchange home with away team for the same calculations
+        const matchData = isHomeTeam
+          ? match
+          : {
+              ...match,
+              homeTeamScore: match.awayTeamScore,
+              awayTeamScore: match.homeTeamScore,
+              homeTeam: match.awayTeam,
+              awayTeam: match.homeTeamScore,
+          }
+
+        if (!updatedTeamEntry) {
+            updatedTeamEntry = {
+                teamName: matchData.homeTeam,
+                matchesPlayed: 0,
+                goalsFor: 0,
+                goalsAgainst: 0,
+                points: 0
+            }
+        }
+
+        const hasHomeTeamWon = matchData.homeTeamScore - matchData.awayTeamScore > 0
+        const isTie = matchData.homeTeamScore - matchData.awayTeamScore === 0
+
+        // only add points and goals if match was actually played yet
+        if (matchData.matchPlayed) {
+            return {
+                teamName: matchData.homeTeam,
+                matchesPlayed: updatedTeamEntry.matchesPlayed + 1,
+                goalsFor: updatedTeamEntry.goalsFor + matchData.homeTeamScore,
+                goalsAgainst: updatedTeamEntry.goalsAgainst + matchData.awayTeamScore,
+                // if home team wins add 3 points, on tie 1 otherwise don't add points
+                points: hasHomeTeamWon ? updatedTeamEntry.points + 3 :
+                  isTie ? updatedTeamEntry.points + 1 : updatedTeamEntry.points,
+            }
+        } else {
+            return updatedTeamEntry
+        }
+    }
     /**
      * Asynchronic function to fetch the data from the server and set the matches.
      */
     async fetchData() {
-        const matches = await getAllMatches()
+        let matches = await getAllMatches()
         this.setMatches(matches);
     }    
 }

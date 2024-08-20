@@ -20,11 +20,7 @@ const props = defineProps({
     <tr>
       <th v-for="header in props.headers"
         class="table-header"
-        :class="{ 'hidden': header.isHidden,  }"
-        :style="{
-          width: header?.width ? header.width + 'px' : 'auto',
-          maxWidth: header?.width ? header.maxWidth + 'px' : 'auto',
-          'text-align': header.align }"
+        :style="header.style"
         :key="header"
       >
         {{ header.value }}
@@ -32,10 +28,11 @@ const props = defineProps({
     </tr>
     <tr v-for="(row, rowIndex) in props.rows" class="row" :key="rowIndex">
       <td v-for="(cell, cellIndex) in row"
-        :class="{ 'hidden': cell.isHidden,
+        :class="{
           'cell--bold': cell.isBold,
-          'row--striped': rowIndex%2 === 1 && props.isStriped}"
-        :style="{ 'width': cell.width ? cell.width + 'px' : 'auto', 'text-align': cell.align }"
+          'row--striped': rowIndex%2 === 1 && props.isStriped
+        }"
+        :style="cell.style"
         :key="cellIndex">
         <div v-if="cell.isFlagCell" class="flag-cell" :class="{ 'flag--left': !cell.isFlagRight }">
           <span>{{ cell.value }}</span> <span :style="{ order: cell.isFlagRight ? 1 : -4}">
@@ -57,9 +54,6 @@ const props = defineProps({
 }
 .flag--left {
   justify-content: flex-start;
-}
-.hidden {
-  display: none;
 }
 .table {
   color: #4B5C68;

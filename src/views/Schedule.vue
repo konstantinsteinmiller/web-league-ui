@@ -2,8 +2,8 @@
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import LeagueTable from "@/components/LeagueTable.vue";
 import LeagueService from "@/services/LeagueService.js";
-import {getCountryFlag, getToken} from "../api";
-import {computed, ref, watchEffect} from "vue";
+import { getToken } from "../api";
+import { computed, ref } from "vue";
 
 const matchesList = ref([])
 
@@ -20,42 +20,38 @@ fetchMatches()
 
 
 
-const tableHeadersList = ref([
-  { value: 'Date/Time', isHidden: window.innerWidth <= 500, width: '150', align: 'left' },
-  { value: 'Stadium', isHidden: window.innerWidth <= 750, align: 'left' },
-  { value: 'Home Team', align: 'right', maxWidth: '150' },
-  { value: '', width: '70' },
-  { value: 'Away Team', align: 'left', maxWidth: '150' }])
+const tableHeadersList = [
+  { value: 'Date/Time' },
+  { value: 'Stadium' },
+  { value: 'Home Team' },
+  { value: '' },
+  { value: 'Away Team' }
+]
 
 const matchDataList = computed(() => {
   return matchesList.value.map((match) => {
     const date = new Date(match.matchDate)
     return [
       {
-        value: date.toLocaleDateString('de-de', { hour:"numeric", minute: "numeric"}).replace(',', ''),
-        align: 'left', width: '80'
+        value: date.toLocaleDateString('de-de', { hour:"numeric", minute: "numeric"}).replace(',', '')
       },
       {
-        value: match.stadium,
-        align: 'left',
+        value: match.stadium
       },
       {
         value: match.homeTeam,
         isFlagRight: true,
         flagUrl: `https://flagsapi.codeaid.io/${match.homeTeam}.png`,
-        align: 'right',
         isBold: true,
         isFlagCell: true
       },
       {
-        isBold: true,
-        value: '1-1',
-        align: 'center'
+        value: `${match.homeTeamScore} : ${match.awayTeamScore}`,
+        isBold: true
       },
       {
         value: match.awayTeam,
         flagUrl: `https://flagsapi.codeaid.io/${match.awayTeam}.png`,
-        align: 'left',
         isBold: true,
         isFlagCell: true
       }
@@ -69,11 +65,60 @@ const matchDataList = computed(() => {
     <div>
       <h1 class="heading">League Schedule</h1>
 
-      <LeagueTable :headers="tableHeadersList" :rows="matchDataList" :is-striped="true"></LeagueTable>
+      <LeagueTable :headers="tableHeadersList" :rows="matchDataList" :is-striped="true" />
     </div>
   </DefaultLayout>
 </template>
 
 <style scoped>
-
+>>> .table th:nth-of-type(1),
+>>> .table td:nth-of-type(1){
+  text-align: right;
+  width: 80px;
+}
+>>> .table th:nth-of-type(2),
+>>> .table td:nth-of-type(2){
+  text-align: left;
+  padding: 0 40px;
+}
+>>> .table th:nth-of-type(3),
+>>> .table td:nth-of-type(3){
+  text-align: right;
+  padding-left: 16px;
+}
+>>> .table th:nth-of-type(4),
+>>> .table td:nth-of-type(4){
+  text-align: center;
+  padding: 0 16px;
+  width: 70px;
+}
+>>> .table th:nth-of-type(5),
+>>> .table td:nth-of-type(5){
+  text-align: left;
+  padding-right: 16px;
+}
+@media (max-width: 750px) {
+  >>> .table th:nth-of-type(2),
+  >>> .table td:nth-of-type(2){
+    display: none;
+  }
+  >>> .table th:nth-of-type(3),
+  >>> .table td:nth-of-type(3){
+    padding-left: 4px;
+  }
+  >>> .table th:nth-of-type(4),
+  >>> .table td:nth-of-type(4){
+    padding: 0 4px;
+  }
+  >>> .table th:nth-of-type(5),
+  >>> .table td:nth-of-type(5){
+    padding-right: 4px;
+  }
+}
+@media (max-width: 500px) {
+  >>> .table th:nth-of-type(1),
+  >>> .table td:nth-of-type(1){
+    display: none;
+  }
+}
 </style>

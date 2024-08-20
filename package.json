@@ -7,7 +7,8 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "start": "npm run serve",
-    "test": "jest"
+    "test": "jest",
+    "server": "node server.js dev-mock-server-config.json"
   },
   "dependencies": {
     "axios": "^0.21.4",
