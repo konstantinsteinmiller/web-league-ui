@@ -3,14 +3,15 @@
 Welcome to the Football League Web UI project. The goal of the project is to build a browser based web frontend SPA that gets the data about match schedule/results from the backend and then computes leaderboard based on the rules explained in the challenge description.
 
 ## Result
-[Schedule 1000x700](https://github.com/konstantinsteinmiller/web-league-ui/tree/master/public/documentation/Leaderboard_1000x700.png)
-[Schedule 750x700](https://github.com/konstantinsteinmiller/web-league-ui/tree/master/public/documentation/Leaderboard_750x700.png)
-[Schedule 500x700](https://github.com/konstantinsteinmiller/web-league-ui/tree/master/public/documentation/Leaderboard_500x700.png)
+![Schedule_1000x700](https://github.com/konstantinsteinmiller/web-league-ui/blob/master/public/documentation/Leaderboard_1000x700.png?raw=true)
+![Schedule 750x700](https://github.com/konstantinsteinmiller/web-league-ui/blob/master/public/documentation/Leaderboard_750x700.png?raw=true)
+![Schedule 500x700](https://github.com/konstantinsteinmiller/web-league-ui/blob/master/public/documentation/Leaderboard_500x700.png?raw=true)
 
-[Leaderboard 1000x700](https://github.com/konstantinsteinmiller/web-league-ui/tree/master/public/documentation/Leaderboard_1000x700.png)
-[Leaderboard 750x700](https://github.com/konstantinsteinmiller/web-league-ui/tree/master/public/documentation/Leaderboard_750x700.png)
-[Leaderboard 500x700](https://github.com/konstantinsteinmiller/web-league-ui/tree/master/public/documentation/Leaderboard_500x700.png)
-[404 1000x700](https://github.com/konstantinsteinmiller/web-league-ui/tree/master/public/documentation/404_1000x700.png)
+![Leaderboard 1000x700](https://github.com/konstantinsteinmiller/web-league-ui/blob/master/public/documentation/Leaderboard_1000x700.png?raw=true)
+![Leaderboard 750x700](https://github.com/konstantinsteinmiller/web-league-ui/blob/master/public/documentation/Leaderboard_750x700.png?raw=true)
+![Leaderboard 500x700](https://github.com/konstantinsteinmiller/web-league-ui/blob/master/public/documentation/Leaderboard_500x700.png?raw=true)
+
+![404 1000x700](https://github.com/konstantinsteinmiller/web-league-ui/blob/master/public/documentation/404_1000x700.png?raw=true)
 
 
 ## Install Dependencies
