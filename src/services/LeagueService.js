@@ -8,8 +8,8 @@
  *       ADDITIONALLY, MAKE SURE THAT ALL LIBRARIES USED IN THIS FILE FILE ARE COMPATIBLE WITH PURE JAVASCRIPT
  * 
  */
-import { getAllMatches } from '../api'
-import { ref } from "vue";
+import {getAllMatches} from '../api'
+import {ref} from "vue";
 
 const matchesList = ref([])
 
@@ -70,11 +70,10 @@ class LeagueService {
      * @returns {Array} List of teams representing the leaderboard.
      */
     getLeaderboard() {
-        const sortedLeaderboardList = this.getSortedLeaderboard()
-        return sortedLeaderboardList
+        return this.getSortedLeaderboard()
     }
 
-    /** @returns {Array} sorted leaderboard as List of Entries
+    /** @returns {Array} sorted leaderboard as List of entries
      */
     getSortedLeaderboard() {
         const leaderboardObject = this.assessLeaderboardFromMatches(matchesList.value)
@@ -95,7 +94,7 @@ class LeagueService {
 
             /* 1st: equal points, so find tie-break by head-to-head winner */
             const headToHeadTieBreakerLeaderboard = this.assessLeaderboardFromMatches(matchesWithTeamAAndBList)
-            // console.table(headToHeadTieBreakerLeaderboard)
+
             const headToHeadTeamA = headToHeadTieBreakerLeaderboard[a.teamName]
             const headToHeadTeamB = headToHeadTieBreakerLeaderboard[b.teamName]
             if (headToHeadTeamA.points > headToHeadTeamB.points) {
@@ -113,7 +112,7 @@ class LeagueService {
                 return 1
             }
 
-            /* 3rd: goal difference tie-breaker */
+            /* 3rd: scored goals tie-breaker */
             if (teamAEntry.goalsFor > teamBEntry.goalsFor) {
                 return -1
             } else if (teamAEntry.goalsFor < teamBEntry.goalsFor) {

@@ -365,4 +365,80 @@ describe("leaderboard", () => {
     expect(fourthTeam.goalsAgainst).toBe(4);
     expect(fourthTeam.points).toBe(1);
   });
+
+  test('Brazil wins tie-breaker by scored goals', async () => {
+    const matches = [
+      {
+        "matchDate": 1651744228685,
+        "stadium": "Maracanã",
+        "homeTeam": "Brazil",
+        "awayTeam": "Serbia",
+        "matchPlayed": true,
+        "homeTeamScore": 0,
+        "awayTeamScore": 0
+      },
+      {
+        "matchDate": 1651744228685,
+        "stadium": "Stade de Suisse",
+        "homeTeam": "Switzerland",
+        "awayTeam": "Serbia",
+        "matchPlayed": true,
+        "homeTeamScore": 0,
+        "awayTeamScore": 2
+      },
+      {
+        "matchDate": 1651744228685,
+        "stadium": "Stadion Rajko Mitic",
+        "homeTeam": "Serbia",
+        "awayTeam": "Cameroon",
+        "matchPlayed": true,
+        "homeTeamScore": 1,
+        "awayTeamScore": 1
+      },
+      {
+        "matchDate": 1651744228685,
+        "stadium": "Maracanã",
+        "homeTeam": "Brazil",
+        "awayTeam": "Switzerland",
+        "matchPlayed": true,
+        "homeTeamScore": 4,
+        "awayTeamScore": 2
+      },
+      {
+        "matchDate": 1651744228685,
+        "stadium": "Maracanã",
+        "homeTeam": "Brazil",
+        "awayTeam": "Cameroon",
+        "matchPlayed": true,
+        "homeTeamScore": 0,
+        "awayTeamScore": 0
+      },
+      {
+        "matchDate": 1651744228685,
+        "stadium": "Stade de Suisse",
+        "homeTeam": "Switzerland",
+        "awayTeam": "Cameroon",
+        "matchPlayed": false,
+        "homeTeamScore": '-',
+        "awayTeamScore": '-'
+      }
+    ]
+    leagueService.setMatches(matches);
+
+    const leaderboard = leagueService.getLeaderboard();
+
+    const firstTeam = leaderboard[0];
+    expect(firstTeam.teamName).toBe('Brazil');
+    expect(firstTeam.matchesPlayed).toBe(3);
+    expect(firstTeam.goalsFor).toBe(4);
+    expect(firstTeam.goalsAgainst).toBe(2);
+    expect(firstTeam.points).toBe(5);
+
+    const secondTeam = leaderboard[1];
+    expect(secondTeam.teamName).toBe('Serbia');
+    expect(secondTeam.matchesPlayed).toBe(3);
+    expect(secondTeam.goalsFor).toBe(3);
+    expect(secondTeam.goalsAgainst).toBe(1);
+    expect(secondTeam.points).toBe(5);
+  });
 });

@@ -1,24 +1,16 @@
 <script setup>
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import LeagueTable from "@/components/LeagueTable.vue";
-import LeagueService from "@/services/LeagueService.js";
-import { getToken } from "../api";
 import { computed, ref } from "vue";
+import {useLeagueService} from "@/use/useLeagueService";
 
 const matchesList = ref([])
 
 const fetchMatches = async () => {
-  await getToken()
-  const leagueService = new LeagueService()
-  await leagueService.fetchData()
+  const {leagueService} = await useLeagueService()
   matchesList.value = leagueService.getMatches().value
-
-  console.table(matchesList?.value)
 }
-
 fetchMatches()
-
-
 
 const tableHeadersList = [
   { value: 'Date/Time' },
